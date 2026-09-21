@@ -8,6 +8,7 @@ export * from './canonical';
 export * from './layout';
 export * from './bom';
 export * from './pricing';
+export * from './assemble';
 export * from './validate';
 export * from './rules';
 export * from './fixtures/harper-cloud';

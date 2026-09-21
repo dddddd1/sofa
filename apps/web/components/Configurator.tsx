@@ -6,6 +6,7 @@ import {
   validateDesign,
   computeLayout,
   findModule,
+  listAddPresets,
   type Catalog,
   type CatalogModule,
   type Design,
@@ -141,14 +142,18 @@ export function Configurator({ catalog, templates, colorways }: Props) {
     return cw?.srgb ?? '#b0a89c';
   }, [colorways, cover.grade, cover.colorwayId]);
 
-  const addModule = useCallback(
-    (code: string) => {
-      const mod = modulesByCode.get(code);
-      if (!mod) return;
-      setItems((prev) => [...prev, { moduleCode: code, power: false }]);
+  // 防错优先：只展示能安全追加的组合（方向自动推导），用户摆不出非法方案
+  const addPresets = useMemo(
+    () => listAddPresets(design, catalog),
+    [design, catalog],
+  );
+
+  const applyPreset = useCallback(
+    (preset: { add: { moduleCode: string; power: boolean }[] }) => {
+      setItems((prev) => [...prev, ...preset.add]);
       setActiveTemplate(null);
     },
-    [modulesByCode],
+    [],
   );
 
   const removeModule = useCallback((index: number) => {
@@ -238,19 +243,23 @@ export function Configurator({ catalog, templates, colorways }: Props) {
 
           <section>
             <h2 className="mb-2 text-xs font-semibold uppercase tracking-widest text-black/40">
-              Add a module
+              Extend your sofa
             </h2>
-            <div className="flex flex-wrap gap-1.5">
-              {catalog.modules.map((m) => (
-                <button
-                  key={m.code}
-                  onClick={() => addModule(m.code)}
-                  className="rounded-full border border-black/15 px-3 py-1 text-xs transition hover:border-harper-clay hover:text-harper-clay"
-                >
-                  {m.name}
-                </button>
-              ))}
-            </div>
+            {addPresets.length > 0 ? (
+              <div className="flex flex-col gap-1.5">
+                {addPresets.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => applyPreset(p)}
+                    className="rounded-md border border-black/15 px-3 py-2 text-left text-xs transition hover:border-harper-clay hover:text-harper-clay"
+                  >
+                    + {p.label}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-black/40">Your design is complete.</p>
+            )}
           </section>
 
           <CoverPicker catalog={catalog} cover={cover} colorways={colorways} onChange={setCover} />
@@ -338,24 +347,32 @@ function TemplateSwatches({
       <h2 className="mb-2 text-xs font-semibold uppercase tracking-widest text-black/40">
         Start from a design
       </h2>
-      <div className="flex gap-1.5">
+      <div className="flex flex-col gap-1.5">
         {templates.map((t) => (
           <button
             key={t.templateId}
             onClick={() => onSelect(t)}
-            className={`flex-1 rounded-md border px-2 py-1.5 text-xs transition ${
+            className={`flex items-center justify-between rounded-md border px-3 py-2 text-left text-xs transition ${
               active === t.templateId
                 ? 'border-harper-clay bg-harper-clay/10 text-harper-clay'
-                : 'border-black/10 text-black/50 hover:border-black/25'
+                : 'border-black/10 text-black/60 hover:border-black/25'
             }`}
           >
-            {t.items.length} pcs
+            <span>{TEMPLATE_LABEL[t.templateId ?? ''] ?? `${t.items.length}-piece`}</span>
+            <span className="text-[11px] text-black/35">{t.items.length} pcs</span>
           </button>
         ))}
       </div>
     </section>
   );
 }
+
+const TEMPLATE_LABEL: Record<string, string> = {
+  'l-sectional-4': 'L-shape with chaise',
+  'sofa-3': 'Classic sofa',
+  'l-sectional-5': 'L-shape, 5 seats',
+  'sofa-4-power': 'Sofa with power seating',
+};
 
 function CoverPicker({
   catalog,
