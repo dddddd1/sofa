@@ -1,0 +1,32 @@
+{
+  "name": "@harper/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Next.js DTC 前端：Harper Cloud 3D 模块化沙发配置器（SEO + 复用 @harper/core，React Three Fiber 渲染）",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@harper/core": "workspace:*",
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.0.0",
+    "next": "^15.2.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "three": "^0.174.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.174.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.5.4"
+  }
+}
