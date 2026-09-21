@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { hashSnapshot, validateDesign } from '@harper/core';
 import { CatalogService } from '../catalog/catalog.service';
 import type { ValidateRequest } from './designs.dto';
 
 @Injectable()
 export class DesignsService {
-  constructor(private readonly catalogs: CatalogService) {}
+  constructor(@Inject(CatalogService) private readonly catalogs: CatalogService) {}
 
   /**
    * 服务端权威校验。前端在浏览器里跑同一份 core 代码只做即时反馈；

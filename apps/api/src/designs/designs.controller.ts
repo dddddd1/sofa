@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, UsePipes } from '@nestjs/common';
 import { ruleDescriptors } from '@harper/core';
 import { ZodValidationPipe } from '../zod-validation.pipe';
 import { type ValidateRequest, validateRequestSchema } from './designs.dto';
@@ -11,7 +11,7 @@ import { DesignsService } from './designs.service';
  */
 @Controller('designs')
 export class DesignsController {
-  constructor(private readonly designs: DesignsService) {}
+  constructor(@Inject(DesignsService) private readonly designs: DesignsService) {}
 
   @Post('validate')
   @UsePipes(new ZodValidationPipe(validateRequestSchema))

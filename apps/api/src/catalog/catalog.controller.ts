@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
 import { CatalogService } from './catalog.service';
 
 /**
@@ -9,7 +9,7 @@ import { CatalogService } from './catalog.service';
  */
 @Controller('catalog/series')
 export class CatalogController {
-  constructor(private readonly catalogs: CatalogService) {}
+  constructor(@Inject(CatalogService) private readonly catalogs: CatalogService) {}
 
   @Get(':slug')
   async getSeries(@Param('slug') slug: string) {
