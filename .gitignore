@@ -1,6 +1,5 @@
 node_modules/
 dist/
-.next/
 coverage/
 .env
 .env.local
@@ -9,3 +8,4 @@ coverage/
 .turbo/
 .trae-html-share-packages/
 *.tsbuildinfo
+.next/
